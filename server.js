@@ -19,8 +19,8 @@ const pool = new Pool({
 
 // Verificar conexión a PostgreSQL
 pool.connect()
-    .then(() => console.log('🟢 Conectado a PostgreSQL en Docker'))
-    .catch(err => console.error('🔴 Error conectando a PostgreSQL:', err));
+    .then(() => console.log('Conectado a PostgreSQL en Docker'))
+    .catch(err => console.error('Error conectando a PostgreSQL:', err));
 
 // Ruta de prueba para verificar conexión a la BD
 app.get('/db', async (req, res) => {
