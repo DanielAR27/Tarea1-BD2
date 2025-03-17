@@ -77,12 +77,3 @@ CREATE TABLE Detalle_Pedido (
     FOREIGN KEY (id_pedido) REFERENCES Pedido(id_pedido) ON DELETE CASCADE,
     FOREIGN KEY (id_producto) REFERENCES Producto(id_producto) ON DELETE CASCADE
 );
-
-CREATE TABLE Autenticacion_JWT (
-    id_sesion SERIAL PRIMARY KEY,
-    id_usuario INT NOT NULL,
-    token_jwt TEXT NOT NULL,
-    refresh_token TEXT UNIQUE NOT NULL,
-    fecha_expiracion TIMESTAMP NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE
-);
