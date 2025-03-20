@@ -1,35 +1,35 @@
-const pool = require("../../db"); // Asegúrate de que la ruta a db.js sea correcta
+const pool = require("../../db");
 
 const Reservation = {
     getAll: async () => {
-        const result = await pool.query("SELECT * FROM reservations");
+        const result = await pool.query("SELECT * FROM reserva");  
         return result.rows;
     },
 
     getById: async (id) => {
-        const result = await pool.query("SELECT * FROM reservations WHERE id = $1", [id]);
+        const result = await pool.query("SELECT * FROM reserva WHERE id_reserva = $1", [id]); 
         return result.rows[0];
     },
 
-    create: async (restaurant_id, user_id, date, time, guests) => {
+    create: async (id_usuario, id_restaurante, fecha_hora, estado) => {
         const result = await pool.query(
-            "INSERT INTO reservations (restaurant_id, user_id, date, time, guests) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-            [restaurant_id, user_id, date, time, guests]
+            "INSERT INTO reserva (id_usuario, id_restaurante, fecha_hora, estado) VALUES ($1, $2, $3, $4) RETURNING *",
+            [id_usuario, id_restaurante, fecha_hora, estado]
         );
         return result.rows[0];
     },
 
-    update: async (id, date, time, guests) => {
+    update: async (id, fecha_hora, estado) => {
         const result = await pool.query(
-            "UPDATE reservations SET date = $1, time = $2, guests = $3 WHERE id = $4 RETURNING *",
-            [date, time, guests, id]
+            "UPDATE reserva SET fecha_hora = $1, estado = $2 WHERE id_reserva = $3 RETURNING *",
+            [fecha_hora, estado, id]
         );
         return result.rows[0];
     },
 
     delete: async (id) => {
-        const result = await pool.query("DELETE FROM reservations WHERE id = $1 RETURNING *", [id]);
-        return result.rows[0];
+        const result = await pool.query("DELETE FROM reserva WHERE id_reserva = $1 RETURNING *", [id]);  
+        return result.rowCount > 0;
     },
 };
 

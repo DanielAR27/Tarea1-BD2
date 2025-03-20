@@ -19,30 +19,53 @@ exports.getRestaurantById = async (req, res) => {
     }
 };
 
+// Agrega la función createRestaurant
 exports.createRestaurant = async (req, res) => {
     try {
-        const { name, address } = req.body;
-        const owner_id = req.user ? req.user.id : null; // Se obtiene del token JWT si existe
-        const newRestaurant = await Restaurant.create(name, address, owner_id);
+        const { nombre, direccion, id_admin } = req.body;
+
+        // 🔹 Si el usuario está autenticado, usar su id_usuario como id_admin
+        const admin_id = req.user ? req.user.id_usuario : id_admin;
+
+        // 🔹 Verificar que el id_admin es válido
+        if (!admin_id) {
+            return res.status(400).json({ error: "Se requiere un id_admin válido." });
+        }
+
+        // 🔹 Crear el restaurante en la BD
+        const newRestaurant = await Restaurant.create(nombre, direccion, admin_id);
+
         res.status(201).json(newRestaurant);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
+
+
 // 🔹 Agregar la función updateRestaurant
 exports.updateRestaurant = async (req, res) => {
     try {
-        const { name, address } = req.body;
-        const updatedRestaurant = await Restaurant.update(req.params.id, name, address);
+        console.log("🔍 Datos recibidos en `req.body`:", req.body);
+
+        const { nombre, direccion } = req.body;
+
+        if (!nombre || !direccion) {
+            return res.status(400).json({ error: "El campo 'nombre' y 'direccion' son obligatorios." });
+        }
+
+        const updatedRestaurant = await Restaurant.update(req.params.id, nombre, direccion);
+        
         if (!updatedRestaurant) {
             return res.status(404).json({ error: "Restaurante no encontrado" });
         }
+        
         res.json(updatedRestaurant);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+
 
 // 🔹 Agregar la función deleteRestaurant
 exports.deleteRestaurant = async (req, res) => {

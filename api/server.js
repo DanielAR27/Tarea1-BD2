@@ -3,6 +3,9 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const pool = require("./db"); // Importar conexión a la BD
 const restaurantRoutes = require("./src/routes/restaurant.routes");
+
+console.log("✅ Rutas de restaurantes cargadas correctamente");
+
 const menuRoutes = require("./src/routes/menu.routes");
 const reservationRoutes = require("./src/routes/reservations.routes");
 const orderRoutes = require("./src/routes/orders.routes");
