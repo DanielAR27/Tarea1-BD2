@@ -35,7 +35,7 @@ services:
       - POSTGRES_DB=apidb
     depends_on:
       - postgres
-    networks:  # 🔹 Agrega esta línea
+    networks: 
       - app_network   
   api:
     build: ./api
@@ -47,6 +47,7 @@ services:
       postgres:
         condition: service_healthy  # La API solo se ejecutará cuando PostgreSQL esté listo
     environment:
+      JWT_SECRET: mysecretkey
       DB_HOST: postgres_container
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
