@@ -35,7 +35,8 @@ services:
       - POSTGRES_DB=apidb
     depends_on:
       - postgres
-
+    networks:  # 🔹 Agrega esta línea
+      - app_network   
   api:
     build: ./api
     container_name: node_app

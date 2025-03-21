@@ -1,13 +1,16 @@
+
+// Configuración de la conexión a PostgreSQL
 const { Pool } = require("pg");
 require("dotenv").config();
 
-// Configuración de la conexión a PostgreSQL
+
+
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT
+  host: process.env.POSTGRES_HOST || "postgres_container",  // ⬅️ Debe ser el nombre del contenedor
+  user: process.env.POSTGRES_USER || "admin",
+  password: process.env.POSTGRES_PASSWORD || "admin",
+  database: process.env.POSTGRES_DB || "apidb",
+  port: 5432  // ⬅️ Debe coincidir con PostgreSQL
 });
 
 module.exports = pool;
