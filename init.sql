@@ -49,14 +49,6 @@ CREATE TABLE Reserva (
     FOREIGN KEY (id_restaurante) REFERENCES Restaurante(id_restaurante) ON DELETE CASCADE
 );
 
-CREATE TABLE Mesa (
-    id_mesa SERIAL PRIMARY KEY,
-    id_restaurante INT NOT NULL,
-    capacidad INT NOT NULL CHECK (capacidad > 0),
-    disponible BOOLEAN DEFAULT TRUE,
-    FOREIGN KEY (id_restaurante) REFERENCES Restaurante(id_restaurante) ON DELETE CASCADE
-);
-
 CREATE TABLE Pedido (
     id_pedido SERIAL PRIMARY KEY,
     id_usuario INT NOT NULL,

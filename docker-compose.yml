@@ -15,23 +15,29 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     build: ./api
-    container_name: api_container
+    container_name: node_app
     restart: always
     ports:
       - "5000:5000"
     depends_on:
-      - postgres
-      - auth_service
+      postgres:
+        condition: service_healthy  # La API solo se ejecutará cuando PostgreSQL esté listo
     environment:
       DB_HOST: postgres_container
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
-      AUTH_SERVICE_URL: http://auth_service:4000
+      API_PORT: ${API_PORT}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
     networks:
       - app_network
 
@@ -44,11 +50,12 @@ services:
     depends_on:
       - postgres
     environment:
-      DB_HOST: postgres_container
+      DB_HOST: ${POSTGRES_HOST}
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       DB_NAME: ${POSTGRES_DB}
       DB_PORT: ${POSTGRES_PORT}
+      AUTH_PORT: ${AUTH_PORT}
       JWT_SECRET: ${JWT_SECRET}
     networks:
       - app_network
