@@ -1,5 +1,8 @@
+// Para los tests
 const express = require("express");
 const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger/swaggerConfig");
 const pool = require("./db"); // Importar conexión a la BD
 const restaurantRoutes = require("./src/routes/restaurant.routes");
 
@@ -39,7 +42,12 @@ const testDBConnection = async () => {
 };
 
 // Intentar conectar a la BD al iniciar la API
-testDBConnection();
+if (process.env.NODE_ENV !== "test") {
+    testDBConnection();
+}
+  
+// Ruta de documentación Swagger
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Rutas
 app.use("/restaurants", restaurantRoutes);
@@ -48,22 +56,18 @@ app.use("/reservations", reservationRoutes);
 app.use("/orders", orderRoutes);
 app.use("/products", productoRouters);
 
-// Ruta de prueba para verificar conexión a la BD
-app.get("/db", async (req, res) => {
-    try {
-        const result = await pool.query("SELECT NOW()");
-        res.json({ message: "Conexión exitosa", time: result.rows[0] });
-    } catch (err) {
-        res.status(500).json({ error: "Error conectando a la BD", details: err.message });
-    }
-});
-
 // Ruta principal
 app.get("/", (req, res) => {
     res.send("API de Gestión de Restaurantes");
 });
 
-// Iniciar el servidor
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Servidor corriendo en http://0.0.0.0:${PORT} `);
-});
+module.exports = app; // Exportar para las pruebas de coverage
+
+// Iniciar el servidor solo si no es requerido por test
+/* istanbul ignore next */
+if (require.main === module) {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Servidor corriendo en http://0.0.0.0:${PORT} `);
+    });
+  }
+  

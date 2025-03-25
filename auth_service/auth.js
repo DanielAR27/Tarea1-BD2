@@ -64,7 +64,6 @@ app.post("/auth/register", async (req, res) => {
       usuario: nuevoUsuario.rows[0]
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Error en el servidor" });
   }
 });
@@ -101,7 +100,6 @@ app.post("/auth/login", async (req, res) => {
       usuario: { id_usuario, nombre, email, rol }
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Error en el servidor" });
   }
 });
@@ -121,11 +119,9 @@ app.get("/users/me", verificarToken, async (req, res) => {
 
     res.json(usuario.rows[0]);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Error en el servidor" });
   }
 });
-
 
 // Endpoint para actualizar un usuario
 app.put("/users/:id", verificarToken, async (req, res) => {
@@ -156,7 +152,6 @@ app.put("/users/:id", verificarToken, async (req, res) => {
       usuario: usuarioActualizado.rows[0],
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Error en el servidor" });
   }
 });
@@ -180,14 +175,17 @@ app.delete("/users/:id", verificarToken, async (req, res) => {
 
     res.json({ message: "Usuario eliminado correctamente." });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Error en el servidor." });
   }
 });
 
-const PORT = process.env.AUTH_PORT || 4000;
+module.exports = app; // Exportar para las pruebas de coverage
 
-// Iniciar el servidor
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Autenticación corriendo en http://0.0.0.0:${PORT}`);
-});
+//  Esto solo se ejecuta si se corre directamente como `node auth.js`
+/* istanbul ignore next */
+if (require.main === module) {
+  const PORT = process.env.AUTH_PORT || 4000;
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Autenticación corriendo en http://0.0.0.0:${PORT}`);
+  });
+}

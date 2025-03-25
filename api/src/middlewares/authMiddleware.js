@@ -1,23 +1,27 @@
 const axios = require("axios");
 
-// Utiliza el middleware del contenedor de autenticación
 module.exports = async (req, res, next) => {
   const token = req.header("Authorization");
-  if (!token) return res.status(401).json({ error: "Acceso denegado. No hay token." });
+
+  // Si no hay token, "solo continuar sin usuario"
+  if (!token) {
+    req.user = null; // Esto permite evaluar después si hay user
+    return next();
+  }
 
   try {
-    // Llamar al servicio de autenticación para verificar el token
     const response = await axios.get(`${process.env.AUTH_SERVICE_URL}/auth/verify`, {
       headers: {
         Authorization: token
       }
     });
 
-    // Si el token es válido, se guarda el usuario en la request
     req.user = response.data.usuario;
     next();
   } catch (error) {
     console.error("Error al verificar token con auth_service:", error.message);
-    res.status(401).json({ error: "Token inválido o expirado (vía auth_service)." });
+    // También permitir continuar sin usuario
+    req.user = null;
+    next();
   }
 };

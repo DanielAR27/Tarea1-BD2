@@ -3,7 +3,7 @@ const Restaurant = require("../models/restaurant.model");
 exports.getAllRestaurants = async (req, res) => {
     try {
         const restaurants = await Restaurant.getAll();
-        res.json(restaurants);
+        res.status(201).json(restaurants);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -13,7 +13,7 @@ exports.getRestaurantById = async (req, res) => {
     try {
         const restaurant = await Restaurant.getById(req.params.id);
         if (!restaurant) return res.status(404).json({ error: "Restaurante no encontrado" });
-        res.json(restaurant);
+        res.status(201).json(restaurant);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -45,7 +45,7 @@ exports.createRestaurant = async (req, res) => {
 // función para actualizar un restaurante
 exports.updateRestaurant = async (req, res) => {
     try {
-        console.log("🔍 Datos recibidos en `req.body`:", req.body);
+        console.log("Datos recibidos en `req.body`:", req.body);
 
         const { nombre, direccion } = req.body;
 
@@ -59,7 +59,7 @@ exports.updateRestaurant = async (req, res) => {
             return res.status(404).json({ error: "Restaurante no encontrado" });
         }
         
-        res.json(updatedRestaurant);
+        res.status(201).json(updatedRestaurant);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -68,9 +68,15 @@ exports.updateRestaurant = async (req, res) => {
 // función para eliminar un restaurante
 exports.deleteRestaurant = async (req, res) => {
     try {
-        await Restaurant.delete(req.params.id);
-        res.json({ message: "Restaurante eliminado correctamente" });
+        const deleted = await Restaurant.delete(req.params.id);
+
+        if (!deleted) {
+            return res.status(404).json({ error: "Restaurante no encontrado" });
+        }
+
+        res.status(201).json({ message: "Restaurante eliminado correctamente" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
+

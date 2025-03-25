@@ -28,7 +28,6 @@ exports.createOrder = async (req, res) => {
       });
   
     } catch (error) {
-      console.error("Error al crear pedido:", error.message);
       res.status(500).json({ error: "Error en el servidor" });
     }
   };
@@ -42,9 +41,8 @@ exports.getOrderById = async (req, res) => {
             return res.status(404).json({ error: "Pedido no encontrado" });
         }
 
-        res.json(orderData);
+        res.status(201).json(orderData);
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: "Error en el servidor" });
     }
 };

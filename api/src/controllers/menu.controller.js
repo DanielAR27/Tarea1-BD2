@@ -1,20 +1,12 @@
 const Menu = require("../models/menu.model");
 
+// función para obtener un menú por id
 exports.getMenuById = async (req, res) => {
     try {
         console.log(`Buscando menú con ID: ${req.params.id}`);
         const menu = await Menu.getById(req.params.id);
         if (!menu) return res.status(404).json({ error: "Menú no encontrado" });
-        res.json(menu);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
-
-exports.getMenusByRestaurant = async (req, res) => {
-    try {
-        const menus = await Menu.getByRestaurant(req.params.restaurant_id);
-        res.json(menus);
+        res.status(201).json(menu);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -28,7 +20,6 @@ exports.createMenu = async (req, res) => {
         const newMenu = await Menu.create(restaurant_id, nombre, descripcion);
         res.status(201).json(newMenu);
     } catch (err) {
-        console.error("Error al crear el menú:", err.message);
         res.status(500).json({ error: err.message });
     }
 };
@@ -39,7 +30,7 @@ exports.updateMenu = async (req, res) => {
         const { nombre, descripcion } = req.body;
         const updatedMenu = await Menu.update(req.params.id, nombre, descripcion);
         if (!updatedMenu) return res.status(404).json({ error: "Menú no encontrado" });
-        res.json(updatedMenu);
+        res.status(201).json(updatedMenu);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -50,7 +41,7 @@ exports.deleteMenu = async (req, res) => {
     try {
         const deleted = await Menu.delete(req.params.id);
         if (!deleted) return res.status(404).json({ error: "Menú no encontrado" });
-        res.json({ message: "Menú eliminado correctamente" });
+        res.status(201).json({ message: "Menú eliminado correctamente" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

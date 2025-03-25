@@ -32,10 +32,15 @@ const Restaurant = {
     },
 
     delete: async (id) => {
-        console.log(`Eliminando restaurante con ID: ${id}`); 
-        await pool.query("DELETE FROM restaurante WHERE id_restaurante = $1", [id]); 
+        console.log(`Eliminando restaurante con ID: ${id}`);
+        const result = await pool.query("DELETE FROM restaurante WHERE id_restaurante = $1", [id]);
+    
+        if (result.rowCount === 0) {
+            return null; // No se eliminó nada
+        }
+    
         return { message: "Restaurante eliminado" };
-    },
+    }    
 };
 
 module.exports = Restaurant;

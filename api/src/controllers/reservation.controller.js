@@ -3,7 +3,7 @@ const Reservation = require("../models/reservation.model");
 exports.getAllReservations = async (req, res) => {
     try {
         const reservations = await Reservation.getAll();
-        res.json(reservations);
+        res.status(201).json(reservations);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -13,7 +13,7 @@ exports.getReservationById = async (req, res) => {
     try {
         const reservation = await Reservation.getById(req.params.id);
         if (!reservation) return res.status(404).json({ error: "Reservación no encontrada" });
-        res.json(reservation);
+        res.status(201).json(reservation);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -45,7 +45,7 @@ exports.updateReservation = async (req, res) => {
         if (!updatedReservation) {
             return res.status(404).json({ error: "Reservación no encontrada" });
         }
-        res.json(updatedReservation);
+        res.status(201).json(updatedReservation);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -55,7 +55,7 @@ exports.deleteReservation = async (req, res) => {
     try {
         const deleted = await Reservation.delete(req.params.id);
         if (!deleted) return res.status(404).json({ error: "Reservación no encontrada" });
-        res.json({ message: "Reservación eliminada correctamente" });
+        res.status(201).json({ message: "Reservación eliminada correctamente" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
