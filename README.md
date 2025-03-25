@@ -47,5 +47,54 @@ docker-compose down -v
 ```
 Esto restablecerá completamente el entorno y eliminará todos los datos almacenados hasta el momento.
 
+## Documentación de la API Rest
+
+Pra visualizar la documentación interactiva generada con **Swagger**, abra su navegador después haber ejecutado docker compose y visite:
+
+```
+http://localhost:5000/api-docs
+```
+
+Allí encontrará todos los endpoints documentados con su descripción, parámetros y códigos de respuesta.
+
+## Visualización en tiempo real de base de datos
+
+Puede usar PgAdmin para ver y gestionar la base de datos en tiempo real. Para ello, acceda desde su navegador a:
+
+```
+http://localhost:50050
+```
+
+Asegúrese de tener configuradas las credenciales desde el archivo `.env` o puede basarse en el archivo `template.env` incluido en el repositorio para un entorno funcional.
+
+---
+
+### Pasos para configurar PgAdmin y acceder  a la base de datos:
+
+1. En PgAdmin, vaya a la parte superior izquierda donde **"Servers"**
+  - Haga click derecho sobre *Servers* → **Register** → **Server...**
+2. En la pestaña **General**:
+   - En el campo **Name**, puede escribir por ejemplo: `PG Docker`.
+3. En la pestaña **Connection**:
+   - **Host name/address**: `postgres_container` (o el valor de `POSTGRES_HOST` en el `.env`)
+   - **Port**: `5432` (puede dejarlo igual)
+   - **Maintenance database**: `apidb` (o `POSTGRES_DB`)
+   - **Username**: `postgres` (o `POSTGRES_USER`)
+   - **Password**: `postgres` (o `POSTGRES_PASSWORD`)
+4. Haga click en **Save** para guardar la configuración y conectarte.
+
+---
+
+###  Consultar datos directamente desde PgAdmin:
+
+Una vez conectado:
+
+- Expanda el servidor que creó (`PG Docker`).
+- Vaya a **Databases** → seleccione `apidb` o el valor de `POSTGRES_DB`.
+- En la parte superior izquierda, en la sección de **Object Explorer**, haga click en el ícono de una base de datos negra con un cursor para abrir el **editor de consultas SQL**.
+- Desde ahí, puede hacer consultas en tiempo real directamente sobre la base de datos PostgreSQL.
+
+---
+
 Autor: Pani
 Última actualización: *`25/3/2025`*
