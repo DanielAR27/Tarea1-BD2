@@ -72,16 +72,19 @@ Asegúrese de tener configuradas las credenciales desde el archivo `.env` o pued
 ### Pasos para configurar PgAdmin y acceder  a la base de datos:
 
 1. En PgAdmin, vaya a la parte superior izquierda donde **"Servers"**
-  - Haga click derecho sobre *Servers* → **Register** → **Server...**
+   - Haga click derecho sobre *Servers* → **Register** → **Server...**
+     
 2. En la pestaña **General**:
    - En el campo **Name**, puede escribir por ejemplo: `PG Docker`.
+     
 3. En la pestaña **Connection**:
    - **Host name/address**: `postgres_container` (o el valor de `POSTGRES_HOST` en el `.env`)
    - **Port**: `5432` (puede dejarlo igual)
    - **Maintenance database**: `apidb` (o `POSTGRES_DB`)
    - **Username**: `postgres` (o `POSTGRES_USER`)
    - **Password**: `postgres` (o `POSTGRES_PASSWORD`)
-4. Haga click en **Save** para guardar la configuración y conectarte.
+     
+4. Haga click en **Save** para guardar la configuración y poder conectarse.
 
 ---
 
