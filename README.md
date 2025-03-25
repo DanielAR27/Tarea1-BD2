@@ -1,6 +1,6 @@
-##  Uso con Docker
+#  Uso con Docker
 
-###  Construcción y levantamiento de los servicios
+##  Construcción y levantamiento de los servicios
 
 Para construir los contenedores e iniciar toda la aplicación (API, servicio de autenticación, base de datos, etc.):
 
@@ -8,11 +8,11 @@ Para construir los contenedores e iniciar toda la aplicación (API, servicio de 
 docker-compose up --build
 ```
 
-###  Pruebas de cobertura
+##  Pruebas de cobertura
 
 El proyecto cuenta con pruebas automatizadas separadas para el servicio de autenticación y la API principal. A continuación se presentan los comandos necesarios para ejecutarlas
 
-#### Servición de autenticación
+### Servición de autenticación
 
 Para realizar las pruebas del servicio de autenticación, primero construya el contenedor específico:
 
@@ -24,7 +24,7 @@ Luego, ejecute las pruebas con cobertura:
 ```docker
 docker-compose --profile test up auth_test_runner
 ```
-#### API Principal
+### API Principal
 
 Para realizar las pruebas de la API principal, primero construya el contenedor específico:
 
@@ -38,7 +38,7 @@ Luego, ejecute las pruebas con cobertura:
 docker-compose --profile test up test_runner
 ```
 
-### Reinicio completo del entorno
+## Reinicio completo del entorno
 
 Si desea eliminar todos los contenedores, redes y volúmenes (incluyendo la base de datos), ejecute:
 
