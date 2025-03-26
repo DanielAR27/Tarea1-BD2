@@ -100,7 +100,7 @@ En ambos encontrará todos los endpoints documentados con su descripción, pará
 Puede usar PgAdmin para ver y gestionar la base de datos en tiempo real. Para ello, acceda desde su navegador a:
 
 ```
-http://localhost:50050
+http://localhost:5050
 ```
 
 Asegúrese de tener configuradas las credenciales desde el archivo `.env` o puede basarse en el archivo `template.env` incluido en el repositorio para un entorno funcional.
