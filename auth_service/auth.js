@@ -1,4 +1,6 @@
 const express = require("express");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger/swaggerConfig");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const pool = require("./db");
@@ -6,7 +8,7 @@ const pool = require("./db");
 const app = express();
 app.use(express.json());
 
-// Middleware para validar el JWT
+// Middleware para validar JWT
 function verificarToken(req, res, next) {
   const token = req.header("Authorization");
   if (!token) return res.status(401).json({ error: "Acceso denegado. No hay token." });
@@ -20,7 +22,36 @@ function verificarToken(req, res, next) {
   }
 }
 
-// Endpoint para verificar el token
+/**
+ * @swagger
+ * tags:
+ *   - name: Auth
+ *     description: Endpoints relacionados a autenticación
+ *   - name: Users
+ *     description: Acciones sobre usuarios autenticados
+ *
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
+
+/**
+ * @swagger
+ * /auth/verify:
+ *   get:
+ *     summary: Verificar un token JWT
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Token válido
+ *       401:
+ *         description: Token inválido o faltante
+ */
 app.get("/auth/verify", (req, res) => {
   const token = req.header("Authorization");
   if (!token) return res.status(401).json({ error: "No hay token" });
@@ -33,7 +64,35 @@ app.get("/auth/verify", (req, res) => {
   }
 });
 
-// Endpoint para registrar un nuevo usuario
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Registrar un nuevo usuario
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [nombre, email, contrasena, rol]
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               contrasena:
+ *                 type: string
+ *               rol:
+ *                 type: string
+ *                 enum: [cliente, administrador]
+ *     responses:
+ *       201:
+ *         description: Usuario creado exitosamente
+ *       400:
+ *         description: Datos inválidos
+ */
 app.post("/auth/register", async (req, res) => {
   try {
     const { nombre, email, contrasena, rol } = req.body;
@@ -42,7 +101,7 @@ app.post("/auth/register", async (req, res) => {
       return res.status(400).json({ error: "Todos los campos son obligatorios." });
     }
 
-    if (rol !== "cliente" && rol !== "administrador") {
+    if (!["cliente", "administrador"].includes(rol)) {
       return res.status(400).json({ error: "El rol debe ser 'cliente' o 'administrador'." });
     }
 
@@ -68,7 +127,30 @@ app.post("/auth/register", async (req, res) => {
   }
 });
 
-// Endpoint para iniciar sesión y obtener un JWT
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Iniciar sesión y obtener un JWT
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, contrasena]
+ *             properties:
+ *               email:
+ *                 type: string
+ *               contrasena:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Inicio de sesión exitoso
+ *       400:
+ *         description: Credenciales inválidas o faltantes
+ */
 app.post("/auth/login", async (req, res) => {
   try {
     const { email, contrasena } = req.body;
@@ -104,8 +186,20 @@ app.post("/auth/login", async (req, res) => {
   }
 });
 
-
-// Endpoint para obtener los detalles del usuario autenticado
+/**
+ * @swagger
+ * /users/me:
+ *   get:
+ *     summary: Obtener datos del usuario autenticado
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Datos del usuario
+ *       401:
+ *         description: No autorizado
+ */
 app.get("/users/me", verificarToken, async (req, res) => {
   try {
     const usuario = await pool.query(
@@ -122,6 +216,47 @@ app.get("/users/me", verificarToken, async (req, res) => {
     res.status(500).json({ error: "Error en el servidor" });
   }
 });
+
+/**
+ * @swagger
+ * /users/{id}:
+ *   put:
+ *     summary: Actualizar un usuario por ID
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID del usuario a actualizar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [nombre, email, rol]
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               rol:
+ *                 type: string
+ *                 enum: [cliente, administrador]
+ *     responses:
+ *       200:
+ *         description: Usuario actualizado correctamente
+ *       400:
+ *         description: Campos inválidos
+ *       403:
+ *         description: No tienes permisos para modificar este usuario
+ *       404:
+ *         description: Usuario no encontrado
+ */
 
 // Endpoint para actualizar un usuario
 app.put("/users/:id", verificarToken, async (req, res) => {
@@ -156,6 +291,29 @@ app.put("/users/:id", verificarToken, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /users/{id}:
+ *   delete:
+ *     summary: Eliminar un usuario por ID (solo administrador)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID del usuario a eliminar
+ *     responses:
+ *       200:
+ *         description: Usuario eliminado correctamente
+ *       403:
+ *         description: No tienes permisos para eliminar usuarios
+ *       404:
+ *         description: Usuario no encontrado
+ */
 
 // Endpoint para eliminar un usuario
 app.delete("/users/:id", verificarToken, async (req, res) => {
@@ -179,10 +337,13 @@ app.delete("/users/:id", verificarToken, async (req, res) => {
   }
 });
 
-module.exports = app; // Exportar para las pruebas de coverage
+// Swagger docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-//  Esto solo se ejecuta si se corre directamente como `node auth.js`
-/* istanbul ignore next */
+// Export para pruebas
+module.exports = app;
+
+// Si se ejecuta directamente
 if (require.main === module) {
   const PORT = process.env.AUTH_PORT || 4000;
   app.listen(PORT, "0.0.0.0", () => {
