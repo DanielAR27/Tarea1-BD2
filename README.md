@@ -1,3 +1,35 @@
+# Instalación de módulos
+
+Es necesario actualizar los módulos necesarios para el correcto funcionamiento de la API, para ello se debe ubicar en el folder `./api` mediante el comando
+
+```
+cd ./api
+```
+
+Para poder instalar o actualizar los módulos necesarios basta con utilizar el siguiente comando
+
+```
+npm install
+```
+
+Posteriormente, se puede regresar al directorio general mediante el comando
+
+```
+cd ..
+```
+
+Una vez allí, se debe ubicar ahora en el folder `./auth_service` mediante el comando
+
+```
+cd ./auth_service
+```
+
+Nuevamente, se debe utilizar el comando para instalar o actualizar los módulos necesarios
+
+```
+npm install
+```
+
 #  Uso con Docker
 
 ##  Construcción y levantamiento de los servicios
