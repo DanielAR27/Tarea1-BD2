@@ -81,13 +81,19 @@ Esto restablecerá completamente el entorno y eliminará todos los datos almacen
 
 ## Documentación de la API Rest
 
-Pra visualizar la documentación interactiva generada con **Swagger**, abra su navegador después haber ejecutado docker compose y visite:
+Para visualizar la documentación interactiva generada con **Swagger**, abra su navegador después haber ejecutado docker compose y visite:
 
 ```
 http://localhost:5000/api-docs
 ```
 
-Allí encontrará todos los endpoints documentados con su descripción, parámetros y códigos de respuesta.
+Para visualizar la documentación de la parte de la autenticación viste
+
+```
+http://localhost:4000/api-docs
+```
+
+En ambos encontrará todos los endpoints documentados con su descripción, parámetros y códigos de respuesta.
 
 ## Visualización en tiempo real de base de datos
 
